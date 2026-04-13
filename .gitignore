@@ -1,8 +1,8 @@
 */bin/
 */obj/
 */compile_commands.json
-*/.cache*
-
+*.swp
+*/.cache/
 
 # Prerequisites
 *.d
