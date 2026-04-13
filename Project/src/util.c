@@ -2,8 +2,43 @@
 #include <stdio.h>
 #include "util.h"
 
+#include <stdio.h>
+#include <math.h>
+
+/*
+ * Calculates the sample standard deviation of an array of ints.
+ * `data` - Array of input values
+ * `n` - Number of elements in the array
+ * `Returns:` The calculated standard deviation
+ */
+double calc_stdDev(int data[], int n)
+{
+    double variance = 0.0;
+    // Get mean
+    double mean = calcMean(data, n);
+
+    // Calculate sum of squared differences
+    for (int i = 0; i < n; ++i) {
+        variance += pow(data[i] - mean, 2);
+    }
+
+    // Return the square root of the variance
+    // For sample SD: variance / (n - 1)
+    return sqrt(variance / (n - 1));
+}
+
+double calcMean(int data[], int n)
+{
+    int result = 0;
+    for (int i = 0; i < n; ++i) {
+        result += data[i];
+    }
+
+    return (double)result / n;
+}
+
 // returns time difference in milliseconds
-long getTimeDifference(struct timespec ts_start, struct timespec ts_end)
+int getTimeDifference(struct timespec ts_start, struct timespec ts_end)
 {
     //nanoseconds to milliseconds
     #define TIME_SHIFT 1000000

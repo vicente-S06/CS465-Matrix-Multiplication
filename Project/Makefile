@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Wpedantic -std=gnu99 -O0
+LIBS = -lm
 
 SRCDIR = ./src
 OBJDIR = ./obj
@@ -25,10 +26,10 @@ clean:
 	@echo obj and bin directories have been cleared
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@ 
+	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
 $(DEBUG_TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@ 
+	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	$(CC) -c $(CFLAGS) $< -o $@ -I$(INCDIR)
+	$(CC) -c $(CFLAGS) $< -o $@ -I$(INCDIR) $(LIBS)
