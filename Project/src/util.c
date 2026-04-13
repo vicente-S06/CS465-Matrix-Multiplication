@@ -2,6 +2,18 @@
 #include <stdio.h>
 #include "util.h"
 
+// returns time difference in milliseconds
+long getTimeDifference(struct timespec ts_start, struct timespec ts_end)
+{
+    //nanoseconds to milliseconds
+    #define TIME_SHIFT 1000000
+
+    long startT = ts_start.tv_sec*1000 + ts_start.tv_nsec/TIME_SHIFT;
+    long endT = ts_end.tv_sec*1000 + ts_end.tv_nsec/TIME_SHIFT;
+
+    return endT - startT;
+}
+
 void printMatrix(int **A, int n) 
 {
     for (int i = 0; i < n; i++) {

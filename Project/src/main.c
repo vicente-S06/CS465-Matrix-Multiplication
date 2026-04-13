@@ -7,8 +7,6 @@
 
 #define N 1024
 
-long getTimeDifference(struct timespec ts_start, struct timespec ts_end);
-
 int main(int argc, char *argv[])
 {
     // Argument Handling
@@ -50,6 +48,7 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_MONOTONIC, &ts_start);
     matmul_blocked_2(A, B, C, N, blockSize);
     clock_gettime(CLOCK_MONOTONIC, &ts_end);
+
     runtime = getTimeDifference(ts_start, ts_end);
     printf("Time for matmul_blocked_2(): %ldms\n", runtime);
 
@@ -60,16 +59,4 @@ int main(int argc, char *argv[])
     freeMatrix(D);
 
     return 0;
-}
-
-// returns time difference in milliseconds
-long getTimeDifference(struct timespec ts_start, struct timespec ts_end)
-{
-    //nanoseconds to milliseconds
-    #define TIME_SHIFT 1000000
-
-    long startT = ts_start.tv_sec*1000 + ts_start.tv_nsec/TIME_SHIFT;
-    long endT = ts_end.tv_sec*1000 + ts_end.tv_nsec/TIME_SHIFT;
-
-    return endT - startT;
 }

@@ -1,6 +1,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <time.h>
+
+long getTimeDifference(struct timespec ts_start, struct timespec ts_end);
 void printMatrix(int **A, int n);
 int** mallocMatrix(int n);
 void freeMatrix(int **A);
