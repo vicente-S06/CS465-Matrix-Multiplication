@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Wpedantic -std=gnu99 -O0
-LIBS = -lm
+LIBS = -lm 
 
 SRCDIR = ./src
 OBJDIR = ./obj

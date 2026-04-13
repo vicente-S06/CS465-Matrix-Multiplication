@@ -3,9 +3,11 @@
 */compile_commands.json
 *.swp
 */.cache/
+.clangd
 
 # Prerequisites
 *.d
+
 
 # Object files
 *.o
