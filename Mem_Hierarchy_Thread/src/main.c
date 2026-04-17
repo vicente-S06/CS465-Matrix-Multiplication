@@ -1,4 +1,5 @@
 #include <bits/time.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,6 +9,7 @@
 #define N 1024
 
 void runTrials(int **A, int **B, int **C, int blockSize, int numTrials);
+uint32_t getMatrixHash(int **A);
 
 int main(int argc, char *argv[])
 {
@@ -75,12 +77,26 @@ void runTrials(int **A, int **B, int **C, int blockSize, int numTrials)
         clock_gettime(CLOCK_MONOTONIC, &ts_start);
         matmul_blocked(A, B, C, N, blockSize);
         clock_gettime(CLOCK_MONOTONIC, &ts_end);
+
         runtimes[i] = getTimeDifference(ts_start, ts_end);
         printf("matmul_blocked() runtime: %d ms\n", runtimes[i]);
+        printf("Hash Value: %x\n", getMatrixHash(C));
 
         zeroMatrix(C, N);
     }
 
     printf("Runtime average: %d ms\n", (int)calcMean(runtimes, numTrials));
     printf("Runtime Standard Deviation: %.1lf ms\n", calc_stdDev(runtimes, numTrials));
+
+    clock_gettime(CLOCK_MONOTONIC, &ts_start);
+    matmul(A, B, C, N);
+    clock_gettime(CLOCK_MONOTONIC, &ts_end);
+    printf("matmul() runtime: %d ms\n", getTimeDifference(ts_start, ts_end));
+    printf("Hash Value: %x\n", getMatrixHash(C));
+}
+
+uint32_t getMatrixHash(int **A) 
+{
+    const char *data = (const char *)(*A);
+    return SuperFastHash(data, N*N*sizeof(int));
 }

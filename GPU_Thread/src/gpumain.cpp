@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <cuda_runtime.h>
 #include "util.h"
 #include "matrix.hpp"
-#include <cuda_runtime.h>
 
 #define N 1024
 #define NUM_TRIALS 4
@@ -12,35 +12,32 @@
 
 void runTrials(float *A, float *B, float *C);
 uint32_t getMatrixHash(float *A);
+void runDefault(float *A, float *B, float *C);
 
 int main()
 {
     // Set random seed
     srand(10);
+
     float *A, *B, *C;
     float *d_A, *d_B, *d_C;
-    //float *compareC;
+    float *compareC; // Used to send device calculations to host
 
     int allocSize = N*N * sizeof(float);
 
     // Allocate Host Memory using cudaMallocHost API. This is best practice
     // when buffers will be used for copies between CPU and GPU memory
+    cudaMallocHost(&compareC, allocSize);
     cudaMallocHost(&A, allocSize);
     cudaMallocHost(&B, allocSize);
-    cudaMallocHost(&C, allocSize);
-    //compareC = (float *)malloc(allocSize);
+    C = (float *)malloc(allocSize);
 
     // Fill matrices A and B
     fillMatrix(A, N);
     fillMatrix(B, N);
 
-    struct timespec ts_start = {0};
-    struct timespec ts_end = {0};
-    clock_gettime(CLOCK_MONOTONIC, &ts_start);
-    matmul_blocked(A, B, C, N, CPU_BLOCK_SIZE);
-    clock_gettime(CLOCK_MONOTONIC, &ts_end);
-    printf("matmul_blocked() runtime: %d ms\n", getTimeDifference(ts_start, ts_end));
-    printf("Hash Value: %x\n", getMatrixHash(C));
+    // Run matmul_blocked on CPU
+    runDefault(A, B, C);
 
     cudaMalloc(&d_A, allocSize);
     cudaMalloc(&d_B, allocSize);
@@ -49,19 +46,31 @@ int main()
     // Copy data to the GPU
     cudaMemcpy(d_A, A, allocSize, cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, B, allocSize, cudaMemcpyHostToDevice);
-    cudaMemset(d_C, 0, allocSize);
 
     runTrials(d_A, d_B, d_C);
+
+    cudaFreeHost(compareC);
+    cudaFreeHost(A);
+    cudaFreeHost(B);
+    free(C);
 
     cudaFree(d_A);
     cudaFree(d_B);
     cudaFree(d_C);
-    cudaFreeHost(A);
-    cudaFreeHost(B);
-    cudaFreeHost(C);
-    //free(compareC);
 
     return 0;
+}
+
+void runDefault(float *A, float *B, float *C)
+{
+    struct timespec ts_start = {0};
+    struct timespec ts_end = {0};
+    clock_gettime(CLOCK_MONOTONIC, &ts_start);
+    matmul_blocked(A, B, C, N, CPU_BLOCK_SIZE);
+    clock_gettime(CLOCK_MONOTONIC, &ts_end);
+    printf("matmul_blocked() runtime: %d ms\n", getTimeDifference(ts_start, ts_end));
+    printf("Hash Value: %x\n", getMatrixHash(C));
+
 }
 
 void runTrials(float *A, float *B, float *C)

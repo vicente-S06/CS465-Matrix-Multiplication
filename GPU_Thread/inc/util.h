@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <time.h>
+#include <stdint.h>
 
 float calc_stdDev(int data[], int n);
 float calcMean(int data[], int n);

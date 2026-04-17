@@ -1,9 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "util.h"
-
-#include <stdio.h>
 #include <math.h>
+#include "util.h"
 
 /*
  * Calculates the sample standard deviation of an array of floats.
@@ -63,7 +61,6 @@ char matrixIsEqual(float *A, float *B, int n)
     return 1;
 }
 
-#include <stdint.h>
 #undef get16bits
 #if (defined(__GNUC__) && defined(__i386__)) || defined(__WATCOMC__) \
   || defined(_MSC_VER) || defined (__BORLANDC__) || defined (__TURBOC__)

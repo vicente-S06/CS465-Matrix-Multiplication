@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "util.h"
-
-#include <stdio.h>
 #include <math.h>
 
 /*
@@ -101,7 +100,6 @@ void freeMatrix(int **A)
     free(A);
 }
 
-#include <stdint.h>
 #undef get16bits
 #if (defined(__GNUC__) && defined(__i386__)) || defined(__WATCOMC__) \
   || defined(_MSC_VER) || defined (__BORLANDC__) || defined (__TURBOC__)
