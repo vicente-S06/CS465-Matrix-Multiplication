@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Wpedantic -std=gnu99 -O0
+CFLAGS = -Wall -Wextra -Wpedantic -std=gnu99 -O0 -fopenmp
 LIBS = -lm 
 
 SRCDIR = ./src
@@ -7,15 +7,15 @@ OBJDIR = ./obj
 INCDIR = ./inc
 BINDIR = ./bin
 
-TARGET = $(BINDIR)/Thread1
-DEBUG_TARGET = $(BINDIR)/DEBUG_Thread1
+TARGET = $(BINDIR)/Mem_Hierarchy
+DEBUG_TARGET = $(BINDIR)/DEBUG_Mem_Hierarchy
 INCLUDE = $(addprefix -I,$(INCDIR))
 
 SRCS = $(wildcard $(SRCDIR)/*.c)
 OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 
-default: $(TARGET)	
+all: $(TARGET)	
 
 debug: CFLAGS += -g
 debug: $(DEBUG_TARGET)

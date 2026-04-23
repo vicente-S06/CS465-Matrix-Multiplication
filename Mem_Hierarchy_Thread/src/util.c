@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include "util.h"
 #include <math.h>
+#include <string.h>
 
 /*
  * Calculates the sample standard deviation of an array of ints.
@@ -10,7 +11,7 @@
  * `n` - Number of elements in the array
  * `Returns:` The calculated standard deviation
  */
-double calc_stdDev(int data[], int n)
+double calc_stdDev(double data[], int n)
 {
     double variance = 0.0;
     // Get mean
@@ -26,7 +27,7 @@ double calc_stdDev(int data[], int n)
     return sqrt(variance / (n - 1));
 }
 
-double calcMean(int data[], int n)
+double calcMean(double data[], int n)
 {
     int result = 0;
     for (int i = 0; i < n; ++i) {
@@ -37,67 +38,38 @@ double calcMean(int data[], int n)
 }
 
 // returns time difference in milliseconds
-int getTimeDifference(struct timespec ts_start, struct timespec ts_end)
+double getTimeDifference(struct timespec ts_start, struct timespec ts_end)
 {
     //nanoseconds to milliseconds
-    #define TIME_SHIFT 1000000
+    #define TIME_SHIFT 1000000.0
 
-    long startT = ts_start.tv_sec*1000 + ts_start.tv_nsec/TIME_SHIFT;
-    long endT = ts_end.tv_sec*1000 + ts_end.tv_nsec/TIME_SHIFT;
+    double startT = ts_start.tv_sec*1000 + ts_start.tv_nsec/TIME_SHIFT;
+    double endT = ts_end.tv_sec*1000 + ts_end.tv_nsec/TIME_SHIFT;
 
     return endT - startT;
 }
 
-void printMatrix(int **A, int n) 
+int* mallocMatrix(int n)
 {
-    for (int i = 0; i < n; i++) {
-        printf("|");
-        for (int j = 0; j < n; j++) {
-            printf("%4d, ", A[i][j]);
-        }
-        printf("\b\b|\n");
-    }
-}
-
-char matrixIsEqual(int **A, int **B, int n)
-{
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (A[i][j] != B[i][j]) return 0;
-        }
-    }
-    return 1;
-}
-
-int** mallocMatrix(int n)
-{
-    int **matrix = malloc(n * sizeof(int *));
-    int *tmp = malloc(n * n * sizeof(int));
-
-    if (!matrix || !tmp) {
+    int *matrix = malloc(n * n * sizeof(int));
+    if (!matrix) {
         perror("Matrix Memory allocation failed.");
-        free(matrix);
-        free(tmp);
-        matrix = NULL;
-
-        return NULL;
     }
-
-    for (int r = 0; r < n; r++) {
-        matrix[r] = tmp + r*n;
-    }
-
     return matrix;
 }
 
-void freeMatrix(int **A)
+void fillMatrix(int *A, int n)
 {
-    if (A) {
-        free(*A);
-        *A = NULL;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            A[i*n + j] = rand();
+        }
     }
+}
 
-    free(A);
+void zeroMatrix(int *A, int n) 
+{
+    memset(A, 0, n*n*sizeof(int));
 }
 
 #undef get16bits
@@ -158,4 +130,15 @@ uint32_t SuperFastHash(const char *data, int len)
     hash += hash >> 6;
 
     return hash;
+}
+
+/*
+ * Calculates a 32-bit hash of a square matrix `A`.
+ * `A` - an square integer matrix to calculate the hash of
+ * `n` - the size of the square matrix.
+ * `Returns:` the calculated hash as a 32-bit unsigned integer.
+ */
+uint32_t getMatrixHash(int *A, int n) 
+{
+    return SuperFastHash((const char *)A, n*n*sizeof(int));
 }
