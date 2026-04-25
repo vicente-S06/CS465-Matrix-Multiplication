@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
-#include "util.h"
 #include <math.h>
 #include <string.h>
+#include "util.h"
 
 /*
  * Calculates the sample standard deviation of an array of ints.

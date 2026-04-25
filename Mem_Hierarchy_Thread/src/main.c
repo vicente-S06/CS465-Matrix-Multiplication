@@ -3,36 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "main.h"
 #include "util.h"
 #include "matrix.h"
-
-#define N 1024
-
-void runTrials(int *A, int *B, int *C, int blockSize, int numTrials);
-void runDefault(int *A, int *B, int *C);
+#include "trial.h"
 
 int main(int argc, char *argv[])
 {
-    // Argument Handling
-    if (argc != 2 && argc != 3) {
-        printf("Incorrect # of Arguments\nCorrect Usage:\n");
-        printf("\t%s [BLOCK_SIZE]\n", argv[0]);
-        printf("\t%s [BLOCK_SIZE] [# of Trials]\n", argv[0]);
-        printf("Default # of Trials is 1.\n");
-        return 0;
-    }
-
-    int blockSize = atoi(argv[1]);
-    if (!blockSize) {
-        printf("Invalid Block Size. Must be > 0\n");
-        return 0;
-    }
-
-    int numTrials = 1;
-    if (argc == 3) {
-        numTrials = atoi(argv[2]);
-        numTrials = (numTrials != 0)?numTrials:1;
-    }
+    struct args_s args;
+    char valid_args = handleArgs(argc, argv, &args);
+    if (!valid_args) return 1;
 
     // Set random seed
     srand(10);
@@ -51,7 +31,7 @@ int main(int argc, char *argv[])
     fillMatrix(A, N);
     fillMatrix(B, N);
 
-    runTrials(A, B, C, blockSize, numTrials);
+    runTrials(A, B, C, args.block_size, args.num_trials);
 
     free(A); free(B); free(C);
     A = NULL;
@@ -60,6 +40,7 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
 #define OPENMP
 
 void runTrials(int *A, int *B, int *C, int blockSize, int numTrials)

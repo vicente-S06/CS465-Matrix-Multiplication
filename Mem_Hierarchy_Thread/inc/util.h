@@ -4,6 +4,12 @@
 #include <time.h>
 #include <stdint.h>
 
+struct args_s {
+    int block_size;
+    int num_trials;
+    int num_threads;
+};
+
 double calc_stdDev(double data[], int n);
 double calcMean(double data[], int n);
 double getTimeDifference(struct timespec ts_start, struct timespec ts_end);

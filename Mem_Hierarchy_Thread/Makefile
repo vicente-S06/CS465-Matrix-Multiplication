@@ -7,28 +7,34 @@ OBJDIR = ./obj
 INCDIR = ./inc
 BINDIR = ./bin
 
-TARGET = $(BINDIR)/Mem_Hierarchy
-DEBUG_TARGET = $(BINDIR)/DEBUG_Mem_Hierarchy
-INCLUDE = $(addprefix -I,$(INCDIR))
+TARGET1 = $(BINDIR)/Mem_Hierarchy
+DEBUG_TARGET1 = $(BINDIR)/DEBUG_Mem_Hierarchy
+TARGET2 = $(BINDIR)/OpenMP_Thread
 
-SRCS = $(wildcard $(SRCDIR)/*.c)
-OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
+T1OBJS=$(addprefix $(OBJDIR)/,memH_main.o matrix.o util.o trial.o)
+T2OBJS=$(addprefix $(OBJDIR)/,omp_main.o matrix.o util.o trial.o)
 
+all: $(TARGET1)	$(TARGET2)
 
-all: $(TARGET)	
+test:
+	@echo $(T1OBJS)
+	@echo $(T2OBJS)
 
 debug: CFLAGS += -g
-debug: $(DEBUG_TARGET)
+debug: $(DEBUG_TARGET1)
 
 clean:
 	@rm -f $(OBJDIR)/*.o
 	@rm -f $(BINDIR)/*
 	@echo obj and bin directories have been cleared
 
-$(TARGET): $(OBJS)
+$(TARGET1): $(T1OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
-$(DEBUG_TARGET): $(OBJS)
+$(TARGET2): $(T2OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
+
+$(DEBUG_TARGET1): $(T1OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
