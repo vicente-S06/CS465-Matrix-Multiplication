@@ -20,9 +20,8 @@ void runTrials(int *A, int *B, int *C, struct args_s args)
     printf("Runtime average: %.1lf ms\n", calcMean(runtimes, args.num_trials));
     printf("Runtime Standard Deviation: %.1lf ms\n", calc_stdDev(runtimes, args.num_trials));
 
-    double defRuntime = runDefaultVariant(A, B, C, matmul);
-    printf("\nmatmul() runtime: %.1lf ms\n", defRuntime);
-    printf(" - Hash Value: %x\n", getMatrixHash(C, N));
+    printf("\nDefault Matrix Multiplication:\n");
+    runDefaultVariant(A, B, C, matmul);
 }
 
 typedef struct {
